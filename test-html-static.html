@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Svelte components in HTML</title>
+    <!-- <script src="./web-component-tut/public/build/Circles.js" type="module"></script> -->
+  </head>
+  <body>
+    
+    <h2>Background</h2>
+    <p>
+      Okay, so we're using <a href="https://blog.logrocket.com/build-web-components-svelte">this blog post on compiling Svelte components as Web Components</a>, along with with <a href="https://stackoverflow.com/a/65522522/3246758">this SO answer on making Svelte components as browser bundles</a>, to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.
+    </p>
+    <p>
+      The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.
+    </p>
+    <h2>Static web component using HTML Web Component</h2>
+    <p><strong>Data:</strong> <pre>10|5,30|15,50|25,70|17,90|8</pre></p>
+    <!-- <div class="container" style="background-color:#dddddd;">
+      <animated-circles my_dataset="10|5,30|15,50|25,70|17,90|8">
+      </animated-circles>
+    </div> -->
+
+    <h2>Let's instantiate one here with JavaScript</h2>
+    <div id="circlesjs"></div>
+    <script>
+      // import the chart js code and get a constructor as the default export
+      const { default: Circles } =
+        await import("./web-component-tut/public/build/Circles.js");
+      // const cmp = new WidgetComponent({ target, props })
+
+      // now create the chart
+      const foo = new Circles ({
+        target: document.querySelector('#circlesjs'),
+        props: {
+          data: "10|17,30|25,50|6,70|9,90|12"
+        }});
+    </script>
+    </div>
+  </body>

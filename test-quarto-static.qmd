@@ -1,0 +1,36 @@
+---
+title: "Svelte components in Quarto (static)"
+author: "James Goldie"
+include-before-body:
+  text: |
+    <script src="./web-component-tut/public/build/Circles.js" type="module"></script>
+---
+
+## Background
+
+Okay, so we're using [this blog post on compiling Svelte components as Web Components](https://blog.logrocket.com/build-web-components-svelte), along with with [this SO answer on making Svelte components as browser bundles](https://stackoverflow.com/a/65522522/3246758), to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.
+
+The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.
+
+## Static HTML import
+
+In this first approach, we'll import the module in the YAML frontmatter and then use a static HTML block. (The container isn't necessary, I just want to see where the chart's coming in):
+
+```{{html}}
+<div class="container" style="background-color:#dddddd;">
+  <animated-circles my_dataset="10|5,30|15,50|25,70|17,90|8">
+  </animated-circles>
+</div>
+```
+```{=html}
+<div class="container" style="background-color:#dddddd;">
+  <animated-circles my_dataset="10|5,30|15,50|25,70|17,90|8">
+  </animated-circles>
+</div>
+```
+
+Nice! But it'd be great to instantiate it with JavaScript and use a create-then-update-props pattern, such as [this one used to integrate DeckGL with Observable in this blog post](https://observablehq.com/@tmcw/using-mapbox-gl-js).
+
+A further problem is that because of the Web Components interface, attribute props have to be strings. That's not a super efficient way to pass larger datasets in. Maybe it's not a problem when we instantiuate with JavaScript?
+
+Let's try to fix these problems in [`test-quarto-dynamic.qmd`](./test-quarto-dynamic.qmd).
