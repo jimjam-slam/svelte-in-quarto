@@ -8,6 +8,8 @@ Okay, so we're using [this blog post on compiling Svelte components as Web Compo
 
 The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.
 
+The component itself is [`Circles.svelte`](https://github.com/jimjam-slam/svelte-in-quarto/tree/main/web-component-tut/src/widgets/Circles.svelte), a bunch of animating circles based on [my earlier Svelte tests](https://github.com/jimjam-slam/svelte-experiments/tree/main/src/routes/1-animated-circles). It's pretty simple: literally define an SVG of a bunch of circles, using Svelte's built-in transitions to smoothly add and remove elements that newly enter or leave the dataset (equivalent to d3's `.enter()` and `.exit()`), and regular CSS transitions for elements that are retained when the dataset changes.
+
 ❌ [**The static test**](./test-quarto-static.qmd) aims to use Web Component syntax to drop Svelte components in "statically" with HTML, rather than using JavaScript. Although I got this working, I've abandoned it, as I'm not sure that you can change the props easily, and that's kind of what this is all about.
 
 ✅ [**The dynamic test**](./test-quarto-dynamic.qmd) creates a Svelte component and exposes its props. The idea is to create a component, ibject it into an element, then have it update itself when the props are modified _without it being destroyed and remade_. That way Svelte can take care of the updates.
