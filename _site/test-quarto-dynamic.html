@@ -237,9 +237,16 @@ Component tag name
 <div class="sourceCode cell-code" id="cb4" data-startfrom="60" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 59;"><span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>myCircles <span class="op">=</span> <span class="kw">new</span> Circles<span class="op">.</span><span class="fu">default</span>({</span>
 <span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>  <span class="dt">target</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"#mycircles"</span>)<span class="op">,</span></span>
 <span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  <span class="dt">props</span><span class="op">:</span> {</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="dt">my_dataset</span><span class="op">:</span> <span class="st">"10|5,30|15,50|25,70|17,90|8"</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">// data: "10|5,30|15,50|25,70|17,90|8"</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> [</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-4" data-nodetype="declaration">
 
@@ -247,17 +254,33 @@ Component tag name
 </div>
 </div>
 <p>Great! A little bit convoluted, but it’s working. Now we want to push some new data to it - the equivalent of <code>setProps()</code> in DeckGL.</p>
-<p>I can’t see anything that immediately stands out in <code>myCircles</code>, but inspecting the compiled code in <code>Circles.js</code> reveals that the class returned includes <code>get my_dataset</code> and <code>set my_dataset</code>.</p>
+<p>I can’t see anything that immediately stands out in <code>myCircles</code>, but inspecting the compiled code in <code>Circles.js</code> reveals that the class returned includes <code>get data</code> and <code>set data</code>.</p>
 <p>Maybe I can just write to the prop directly? Let’s set up some options to switch between reactively:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" data-startfrom="75" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 74;"><span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>viewof selectedDataset <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A: 10|5,30|15,50|25,70|17,90|8"</span><span class="op">,</span> <span class="st">"10|5,30|15,50|25,70|17,90|8"</span>]<span class="op">,</span></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"B: 10|25,30|5,50|5"</span><span class="op">,</span> <span class="st">"10|25,30|5,50|5"</span>]<span class="op">,</span></span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"C: 5|12,25|5,32|8,45|21,70|5"</span><span class="op">,</span> <span class="st">"5|12,25|5,32|8,45|21,70|5"</span>]</span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span> {</span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Selected dataset"</span></span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5" data-startfrom="82" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 81;"><span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>viewof selectedDataset <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset A"</span><span class="op">,</span> [</span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset B"</span><span class="op">,</span> [</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset C"</span><span class="op">,</span> [</span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">12</span>}<span class="op">,</span></span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">25</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">32</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}<span class="op">,</span></span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">45</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">21</span>}<span class="op">,</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>    ]]</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span> {</span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Selected dataset"</span></span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-5" data-nodetype="declaration">
 
@@ -266,9 +289,17 @@ Component tag name
 </div>
 <p>And now we’ll update the Svelte component with it:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" data-startfrom="88" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 87;"><span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>myCircles<span class="op">.</span><span class="at">my_dataset</span> <span class="op">=</span> selectedDataset<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="sourceCode cell-code" id="cb6" data-startfrom="112" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 111;"><span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>myCircles<span class="op">.</span><span class="at">data</span> <span class="op">=</span> selectedDataset<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-6" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" data-startfrom="116" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 115;"><span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(selectedDataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="expression">
 
 </div>
 </div>
@@ -296,8 +327,9 @@ Note
 </section>
 
 </main> <!-- /main -->
+
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"CirclesOne = require(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Circles = import(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Circles\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"myCircles = new Circles.default({\n  target: document.querySelector(\"#mycircles\"),\n  props: {\n    my_dataset: \"10|5,30|15,50|25,70|17,90|8\"\n  }\n});\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"viewof selectedDataset = Inputs.select(\n  new Map([\n    [\"A: 10|5,30|15,50|25,70|17,90|8\", \"10|5,30|15,50|25,70|17,90|8\"],\n    [\"B: 10|25,30|5,50|5\", \"10|25,30|5,50|5\"],\n    [\"C: 5|12,25|5,32|8,45|21,70|5\", \"5|12,25|5,32|8,45|21,70|5\"]\n  ]), {\n    label: \"Selected dataset\"\n  });\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"myCircles.my_dataset = selectedDataset;\n"},{"methodName":"interpretQuiet","source":"shinyInput('selectedDataset')"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"CirclesOne = require(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Circles = import(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Circles\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"myCircles = new Circles.default({\n  target: document.querySelector(\"#mycircles\"),\n  props: {\n    // data: \"10|5,30|15,50|25,70|17,90|8\"\n    data: [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]\n  }\n});\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"viewof selectedDataset = Inputs.select(\n  new Map([\n    [\"Dataset A\", [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]],\n    [\"Dataset B\", [\n      {x: 10, r: 25},\n      {x: 30, r: 5},\n      {x: 50, r: 5}\n    ]],\n    [\"Dataset C\", [\n      {x: 5, r: 12},\n      {x: 25, r: 5},\n      {x: 32, r: 8},\n      {x: 45, r: 21},\n      {x: 70, r: 5}\n    ]]\n  ]), {\n    label: \"Selected dataset\"\n  });\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"myCircles.data = selectedDataset;\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"Inputs.table(selectedDataset)\n"},{"methodName":"interpretQuiet","source":"shinyInput('selectedDataset')"}]}
 </script>
 <script type="module">
 window._ojs.paths.runtimeToDoc = "../..";

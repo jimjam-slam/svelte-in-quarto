@@ -61,23 +61,46 @@ Let's create a `CirclesTwo`. I've create a target div, `#mycircles`, on the marg
 myCircles = new Circles.default({
   target: document.querySelector("#mycircles"),
   props: {
-    my_dataset: "10|5,30|15,50|25,70|17,90|8"
+    // data: "10|5,30|15,50|25,70|17,90|8"
+    data: [
+      {x: 10, r: 5},
+      {x: 30, r: 15},
+      {x: 50, r: 25},
+      {x: 70, r: 17},
+      {x: 90, r: 8}
+    ]
   }
 });
 ```
 
 Great! A little bit convoluted, but it's working. Now we want to push some new data to it - the equivalent of `setProps()` in DeckGL.
 
-I can't see anything that immediately stands out in `myCircles`, but inspecting the compiled code in `Circles.js` reveals that the class returned includes `get my_dataset` and `set my_dataset`.
+I can't see anything that immediately stands out in `myCircles`, but inspecting the compiled code in `Circles.js` reveals that the class returned includes `get data` and `set data`.
 
 Maybe I can just write to the prop directly? Let's set up some options to switch between reactively:
 
 ```{ojs}
 viewof selectedDataset = Inputs.select(
   new Map([
-    ["A: 10|5,30|15,50|25,70|17,90|8", "10|5,30|15,50|25,70|17,90|8"],
-    ["B: 10|25,30|5,50|5", "10|25,30|5,50|5"],
-    ["C: 5|12,25|5,32|8,45|21,70|5", "5|12,25|5,32|8,45|21,70|5"]
+    ["Dataset A", [
+      {x: 10, r: 5},
+      {x: 30, r: 15},
+      {x: 50, r: 25},
+      {x: 70, r: 17},
+      {x: 90, r: 8}
+    ]],
+    ["Dataset B", [
+      {x: 10, r: 25},
+      {x: 30, r: 5},
+      {x: 50, r: 5}
+    ]],
+    ["Dataset C", [
+      {x: 5, r: 12},
+      {x: 25, r: 5},
+      {x: 32, r: 8},
+      {x: 45, r: 21},
+      {x: 70, r: 5}
+    ]]
   ]), {
     label: "Selected dataset"
   });
@@ -86,7 +109,12 @@ viewof selectedDataset = Inputs.select(
 And now we'll update the Svelte component with it:
 
 ```{ojs}
-myCircles.my_dataset = selectedDataset;
+//| output: false
+myCircles.data = selectedDataset;
+```
+
+```{ojs}
+Inputs.table(selectedDataset)
 ```
 
 (These are keyed by the `x` value, not an independent index, so when you choose dataset C, most of the circles are treated as new elements that exit/enter, not existing ones that transition)

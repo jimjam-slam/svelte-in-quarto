@@ -6,15 +6,17 @@
   import { interpolatePlasma } from "d3-scale-chromatic";
   import { fly } from "svelte/transition";
 
-  // because data is coming from a webcomponent prop now, it has to be a string.
-  // let's pass it in as x|r pairs separated by commas
-  // 10|23,20|12,30|17,...
-  export let my_dataset;
-  $: console.log("Dataset prop:", my_dataset);
-  $: datasetArray = my_dataset.split(",").map(d => ({
-    x: d.split("|")[0],
-    r: d.split("|")[1]
-  }));
+  // forget the webcomponent: let's take a dataset as a direct array!
+  // it expects pairs
+  export let data;
+  $: console.log("Dataset prop:", data);
+
+  /* i originally took the dataset as a string of "x1|r1,x2|r2,..." in
+     order to leverage the webcomponent string props */
+  // $: datasetArray = my_dataset.split(",").map(d => ({
+  //   x: d.split("|")[0],
+  //   r: d.split("|")[1]
+  // }));
 
   let colourScale = scaleSequential(interpolatePlasma).domain([5, 25]);
 
@@ -24,7 +26,7 @@
      and vanilla css transitions for retained elements that change. we'll use
      d3's colour scale functions to map colour too -->
 <svg>
-  {#each datasetArray as d, i (d.x)}
+  {#each data as d, i (d.x)}
     <circle
       in:fly="{{y: 100}}" out:fly="{{y: 100}}"
       style={"transition: all 1s ease-out"}

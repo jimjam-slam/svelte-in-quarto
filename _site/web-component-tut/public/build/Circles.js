@@ -1942,12 +1942,12 @@ const file = "src/widgets/Circles.svelte";
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[3] = list[i];
-	child_ctx[5] = i;
+	child_ctx[2] = list[i];
+	child_ctx[4] = i;
 	return child_ctx;
 }
 
-// (27:2) {#each datasetArray as d, i (d.x)}
+// (29:2) {#each data as d, i (d.x)}
 function create_each_block(key_1, ctx) {
 	let circle;
 	let circle_cx_value;
@@ -1963,11 +1963,11 @@ function create_each_block(key_1, ctx) {
 		c: function create() {
 			circle = svg_element("circle");
 			attr_dev(circle, "style", "transition: all 1s ease-out");
-			attr_dev(circle, "cx", circle_cx_value = /*d*/ ctx[3].x + "%");
+			attr_dev(circle, "cx", circle_cx_value = /*d*/ ctx[2].x + "%");
 			attr_dev(circle, "cy", "50%");
-			attr_dev(circle, "r", circle_r_value = /*d*/ ctx[3].r);
-			attr_dev(circle, "fill", circle_fill_value = /*colourScale*/ ctx[1](/*d*/ ctx[3].r));
-			add_location(circle, file, 27, 4, 954);
+			attr_dev(circle, "r", circle_r_value = /*d*/ ctx[2].r);
+			attr_dev(circle, "fill", circle_fill_value = /*colourScale*/ ctx[1](/*d*/ ctx[2].r));
+			add_location(circle, file, 29, 4, 1003);
 			this.first = circle;
 		},
 		m: function mount(target, anchor) {
@@ -1977,15 +1977,15 @@ function create_each_block(key_1, ctx) {
 		p: function update(new_ctx, dirty) {
 			ctx = new_ctx;
 
-			if (!current || dirty & /*datasetArray*/ 1 && circle_cx_value !== (circle_cx_value = /*d*/ ctx[3].x + "%")) {
+			if (!current || dirty & /*data*/ 1 && circle_cx_value !== (circle_cx_value = /*d*/ ctx[2].x + "%")) {
 				attr_dev(circle, "cx", circle_cx_value);
 			}
 
-			if (!current || dirty & /*datasetArray*/ 1 && circle_r_value !== (circle_r_value = /*d*/ ctx[3].r)) {
+			if (!current || dirty & /*data*/ 1 && circle_r_value !== (circle_r_value = /*d*/ ctx[2].r)) {
 				attr_dev(circle, "r", circle_r_value);
 			}
 
-			if (!current || dirty & /*datasetArray*/ 1 && circle_fill_value !== (circle_fill_value = /*colourScale*/ ctx[1](/*d*/ ctx[3].r))) {
+			if (!current || dirty & /*data*/ 1 && circle_fill_value !== (circle_fill_value = /*colourScale*/ ctx[1](/*d*/ ctx[2].r))) {
 				attr_dev(circle, "fill", circle_fill_value);
 			}
 		},
@@ -2015,7 +2015,7 @@ function create_each_block(key_1, ctx) {
 		block,
 		id: create_each_block.name,
 		type: "each",
-		source: "(27:2) {#each datasetArray as d, i (d.x)}",
+		source: "(29:2) {#each data as d, i (d.x)}",
 		ctx
 	});
 
@@ -2027,9 +2027,9 @@ function create_fragment(ctx) {
 	let each_blocks = [];
 	let each_1_lookup = new Map();
 	let current;
-	let each_value = /*datasetArray*/ ctx[0];
+	let each_value = /*data*/ ctx[0];
 	validate_each_argument(each_value);
-	const get_key = ctx => /*d*/ ctx[3].x;
+	const get_key = ctx => /*d*/ ctx[2].x;
 	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
 	for (let i = 0; i < each_value.length; i += 1) {
@@ -2046,7 +2046,7 @@ function create_fragment(ctx) {
 				each_blocks[i].c();
 			}
 
-			add_location(svg, file, 25, 0, 907);
+			add_location(svg, file, 27, 0, 964);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2061,8 +2061,8 @@ function create_fragment(ctx) {
 			current = true;
 		},
 		p: function update(ctx, [dirty]) {
-			if (dirty & /*datasetArray, colourScale*/ 3) {
-				each_value = /*datasetArray*/ ctx[0];
+			if (dirty & /*data, colourScale*/ 3) {
+				each_value = /*data*/ ctx[0];
 				validate_each_argument(each_value);
 				group_outros();
 				validate_each_keys(ctx, each_value, get_each_context, get_key);
@@ -2107,19 +2107,26 @@ function create_fragment(ctx) {
 }
 
 function instance($$self, $$props, $$invalidate) {
-	let datasetArray;
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('Circles', slots, []);
-	let { my_dataset } = $$props;
+	let { data } = $$props;
+
+	/* i originally took the dataset as a string of "x1|r1,x2|r2,..." in
+   order to leverage the webcomponent string props */
+	// $: datasetArray = my_dataset.split(",").map(d => ({
+	//   x: d.split("|")[0],
+	//   r: d.split("|")[1]
+	// }));
 	let colourScale = sequential(plasma).domain([5, 25]);
-	const writable_props = ['my_dataset'];
+
+	const writable_props = ['data'];
 
 	Object.keys($$props).forEach(key => {
 		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<Circles> was created with unknown prop '${key}'`);
 	});
 
 	$$self.$$set = $$props => {
-		if ('my_dataset' in $$props) $$invalidate(2, my_dataset = $$props.my_dataset);
+		if ('data' in $$props) $$invalidate(0, data = $$props.data);
 	};
 
 	$$self.$capture_state = () => ({
@@ -2128,15 +2135,13 @@ function instance($$self, $$props, $$invalidate) {
 		scaleSequential: sequential,
 		interpolatePlasma: plasma,
 		fly,
-		my_dataset,
-		colourScale,
-		datasetArray
+		data,
+		colourScale
 	});
 
 	$$self.$inject_state = $$props => {
-		if ('my_dataset' in $$props) $$invalidate(2, my_dataset = $$props.my_dataset);
+		if ('data' in $$props) $$invalidate(0, data = $$props.data);
 		if ('colourScale' in $$props) $$invalidate(1, colourScale = $$props.colourScale);
-		if ('datasetArray' in $$props) $$invalidate(0, datasetArray = $$props.datasetArray);
 	};
 
 	if ($$props && "$$inject" in $$props) {
@@ -2144,22 +2149,18 @@ function instance($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*my_dataset*/ 4) {
-			console.log("Dataset prop:", my_dataset);
-		}
-
-		if ($$self.$$.dirty & /*my_dataset*/ 4) {
-			$$invalidate(0, datasetArray = my_dataset.split(",").map(d => ({ x: d.split("|")[0], r: d.split("|")[1] })));
+		if ($$self.$$.dirty & /*data*/ 1) {
+			console.log("Dataset prop:", data);
 		}
 	};
 
-	return [datasetArray, colourScale, my_dataset];
+	return [data, colourScale];
 }
 
 class Circles extends SvelteComponentDev {
 	constructor(options) {
 		super(options);
-		init(this, options, instance, create_fragment, safe_not_equal, { my_dataset: 2 });
+		init(this, options, instance, create_fragment, safe_not_equal, { data: 0 });
 
 		dispatch_dev("SvelteRegisterComponent", {
 			component: this,
@@ -2171,17 +2172,17 @@ class Circles extends SvelteComponentDev {
 		const { ctx } = this.$$;
 		const props = options.props || {};
 
-		if (/*my_dataset*/ ctx[2] === undefined && !('my_dataset' in props)) {
-			console_1.warn("<Circles> was created without expected prop 'my_dataset'");
+		if (/*data*/ ctx[0] === undefined && !('data' in props)) {
+			console_1.warn("<Circles> was created without expected prop 'data'");
 		}
 	}
 
-	get my_dataset() {
-		return this.$$.ctx[2];
+	get data() {
+		return this.$$.ctx[0];
 	}
 
-	set my_dataset(my_dataset) {
-		this.$$set({ my_dataset });
+	set data(data) {
+		this.$$set({ data });
 		flush();
 	}
 }
