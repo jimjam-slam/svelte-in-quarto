@@ -1,5 +1,4 @@
-<!-- <svelte:options tag="animated-circles" /> -->
-<svelte:options tag={null} />
+<svelte:options tag="animated-circles" accessors />
 
 <script>
   import { randomUniform, randomInt } from "d3-random";
@@ -11,7 +10,7 @@
   // let's pass it in as x|r pairs separated by commas
   // 10|23,20|12,30|17,...
   export let my_dataset;
-  $: console.log(my_dataset);
+  $: console.log("Dataset prop:", my_dataset);
   $: datasetArray = my_dataset.split(",").map(d => ({
     x: d.split("|")[0],
     r: d.split("|")[1]

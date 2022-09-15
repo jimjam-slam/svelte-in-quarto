@@ -28,6 +28,8 @@ function serve() {
 	};
 }
 
+const cmp = "Circles"
+
 export default {
 	// input: 'src/main.js',
 	// output: {
@@ -36,16 +38,17 @@ export default {
 	// 	name: 'app',
 	// 	file: 'public/build/bundle.js'
 	// },
-	input: ['src/Circles.svelte'],
+	input: 'src/widgets/Circles.svelte',
 	output: {
-		format: "iife",
-		dir: "public/build/"
+		format: "es",
+		dir: "public/build",
+		sourcemap: true
 	},
 	plugins: [
 		svelte({
 			compilerOptions: {
+				// customElement: true,
 				// enable run-time checks when not in production
-				customElement: true,
 				dev: !production,
 			}
 		}),

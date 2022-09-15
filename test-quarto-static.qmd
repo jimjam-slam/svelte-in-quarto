@@ -31,6 +31,10 @@ In this first approach, we'll import the module in the YAML frontmatter and then
 
 Nice! But it'd be great to instantiate it with JavaScript and use a create-then-update-props pattern, such as [this one used to integrate DeckGL with Observable in this blog post](https://observablehq.com/@tmcw/using-mapbox-gl-js).
 
+::: {.callout-note}
+Okay, this _was_ working, but my efforts to get it working dynamically broke it here. Specifically, I switched `rollup.config.js` to use `output.format` = `"es"` instead of `"iife"`.
+:::
+
 A further problem is that because of the Web Components interface, attribute props have to be strings. That's not a super efficient way to pass larger datasets in. Maybe it's not a problem when we instantiuate with JavaScript?
 
 Let's try to fix these problems in [`test-quarto-dynamic.qmd`](./test-quarto-dynamic.qmd).

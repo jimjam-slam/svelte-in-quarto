@@ -1,0 +1,5 @@
+project:
+  type: website
+  resources:
+    - /web-component-tut/public/build/*
+    

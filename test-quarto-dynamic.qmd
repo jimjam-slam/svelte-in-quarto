@@ -1,6 +1,9 @@
 ---
 title: "Svelte components in Quarto (dynamic)"
 author: "James Goldie"
+format:
+  html:
+    toc: true
 ---
 
 ## Background
@@ -9,6 +12,12 @@ Okay, so we're using [this blog post on compiling Svelte components as Web Compo
 
 The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.
 
+:::{.callout-note}
+# Component tag name
+
+I've changed the `tag` attribute at the top of `Circles.svelte` from `"animated-circles"` to `{null}` in order to stop an error that crops up. it fixes that error here but prevents the component from being used in [`test-quarto-static.qmd`](./`test-quarto-static.qmd`) with the static HTML syntax.
+:::
+
 ## Dynamic HTML import
 
 In this second approach, we'll import the module in JavaScript, create an instance, and finally update its props to pass new data in. The hope is that we can cirumvent OJS's reactivity when creating the element, allowing it to transition its child elements (like bars or circles representing data) using its own reactivity. [This notebook uses the same pattern to integrate DeckGL with Observable](https://observablehq.com/@tmcw/using-mapbox-gl-js).
@@ -16,34 +25,76 @@ In this second approach, we'll import the module in JavaScript, create an instan
 First, let's import the JavaScript. Since OJS blocks are naturally Promises, we should be able to use either `require()` or `await import()`.
 
 ```{ojs}
-Circles = require("/web-component-tut/public/build/Circles.js");
-console.log("First load:", Circles);
+CirclesOne = require("/web-component-tut/public/build/Circles.js");
 ```
 
 How'd that go? No? What about `await import()`?
 
 ```{ojs}
-// CirclesTwo = {
-  // const { default: WidgetComponent } =
-  // CirclesTwo = await import("/web-component-tut/public/build/Circles.js");
-  // return WidgetComponent;
-// };
-
-CirclesTwo = await import("/web-component-tut/public/build/Circles.js");
+Circles = import("/web-component-tut/public/build/Circles.js");
 ```
 
-Better, I think! Let's create a `CirclesTwo`. I'll create a target `<div>` for it to load into first:
-
-::: {#mycircles style="background-color: #222222;"}
-:::
+Better, I think!
 
 ```{ojs}
-// console.log("Second attempt:");
-console.log("Second load", CirclesTwo);
-myCircles = CirclesTwo({
-  target: "mycircles",
+Circles
+```
+
+## Demo: animated Svelte component
+
+::::{.column-margin}
+```{=html}
+<!-- a bit of a hack to get the circle svg to stick in the margin! -->
+<style>
+  .column-margin.column-container {
+    position: sticky; top: 100px;
+  }
+</style>
+```
+::: {#mycircles style="background-color:#ffffffcc"}
+:::
+::::
+
+Let's create a `CirclesTwo`. I've create a target div, `#mycircles`, on the margin for it to load into first:
+
+```{ojs}
+myCircles = new Circles.default({
+  target: document.querySelector("#mycircles"),
   props: {
-    data: "10|5,30|15,50|25,70|17,90|8"
+    my_dataset: "10|5,30|15,50|25,70|17,90|8"
   }
 });
 ```
+
+Great! A little bit convoluted, but it's working. Now we want to push some new data to it - the equivalent of `setProps()` in DeckGL.
+
+I can't see anything that immediately stands out in `myCircles`, but inspecting the compiled code in `Circles.js` reveals that the class returned includes `get my_dataset` and `set my_dataset`.
+
+Maybe I can just write to the prop directly? Let's set up some options to switch between reactively:
+
+```{ojs}
+viewof selectedDataset = Inputs.select(
+  new Map([
+    ["A: 10|5,30|15,50|25,70|17,90|8", "10|5,30|15,50|25,70|17,90|8"],
+    ["B: 10|25,30|5,50|5", "10|25,30|5,50|5"],
+    ["C: 5|12,25|5,32|8,45|21,70|5", "5|12,25|5,32|8,45|21,70|5"]
+  ]), {
+    label: "Selected dataset"
+  });
+```
+
+And now we'll update the Svelte component with it:
+
+```{ojs}
+myCircles.my_dataset = selectedDataset;
+```
+
+(These are keyed by the `x` value, not an independent index, so when you choose dataset C, most of the circles are treated as new elements that exit/enter, not existing ones that transition)
+
+:::{.callout-note}
+I initially got an error:
+
+> "Error: <Circles>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'"
+
+Adding `accessors` to the `svelte:options` line at the start of `Circles.svelte` fixed this right up!
+:::

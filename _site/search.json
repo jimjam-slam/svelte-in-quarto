@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "test-quarto-static.html",
+    "href": "test-quarto-static.html",
+    "title": "Svelte components in Quarto (static)",
+    "section": "",
+    "text": "Okay, so we’re using this blog post on compiling Svelte components as Web Components, along with with this SO answer on making Svelte components as browser bundles, to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.\nThe end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes."
+  },
+  {
+    "objectID": "test-quarto-static.html#static-html-import",
+    "href": "test-quarto-static.html#static-html-import",
+    "title": "Svelte components in Quarto (static)",
+    "section": "Static HTML import",
+    "text": "Static HTML import\nIn this first approach, we’ll import the module in the YAML frontmatter and then use a static HTML block. (The container isn’t necessary, I just want to see where the chart’s coming in):\n```{html}\n<div class=\"container\" style=\"background-color:#dddddd;\">\n  <animated-circles my_dataset=\"10|5,30|15,50|25,70|17,90|8\">\n  </animated-circles>\n</div>\n```\n\n  \n  \n\nNice! But it’d be great to instantiate it with JavaScript and use a create-then-update-props pattern, such as this one used to integrate DeckGL with Observable in this blog post.\n\n\n\n\n\n\nNote\n\n\n\nOkay, this was working, but my efforts to get it working dynamically broke it here. Specifically, I switched rollup.config.js to use output.format = \"es\" instead of \"iife\".\n\n\nA further problem is that because of the Web Components interface, attribute props have to be strings. That’s not a super efficient way to pass larger datasets in. Maybe it’s not a problem when we instantiuate with JavaScript?\nLet’s try to fix these problems in test-quarto-dynamic.qmd."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Svelt components in Quarto",
+    "section": "",
+    "text": "The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.\n❌ The static test aims to use Web Component syntax to drop Svelte components in “statically” with HTML, rather than using JavaScript. Although I got this working, I’ve abandoned it, as I’m not sure that you can change the props easily, and that’s kind of what this is all about.\n✅ The dynamic test creates a Svelte component and exposes its props. The idea is to create a component, ibject it into an element, then have it update itself when the props are modified without it being destroyed and remade. That way Svelte can take care of the updates."
+  },
+  {
+    "objectID": "test-quarto-dynamic.html",
+    "href": "test-quarto-dynamic.html",
+    "title": "Svelte components in Quarto (dynamic)",
+    "section": "",
+    "text": "Okay, so we’re using this blog post on compiling Svelte components as Web Components, along with with this SO answer on making Svelte components as browser bundles, to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.\nThe end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.\n\n\n\n\n\n\nComponent tag name\n\n\n\nI’ve changed the tag attribute at the top of Circles.svelte from \"animated-circles\" to {null} in order to stop an error that crops up. it fixes that error here but prevents the component from being used in test-quarto-static.qmd with the static HTML syntax."
+  },
+  {
+    "objectID": "test-quarto-dynamic.html#dynamic-html-import",
+    "href": "test-quarto-dynamic.html#dynamic-html-import",
+    "title": "Svelte components in Quarto (dynamic)",
+    "section": "Dynamic HTML import",
+    "text": "Dynamic HTML import\nIn this second approach, we’ll import the module in JavaScript, create an instance, and finally update its props to pass new data in. The hope is that we can cirumvent OJS’s reactivity when creating the element, allowing it to transition its child elements (like bars or circles representing data) using its own reactivity. This notebook uses the same pattern to integrate DeckGL with Observable.\nFirst, let’s import the JavaScript. Since OJS blocks are naturally Promises, we should be able to use either require() or await import().\n\nCirclesOne = require(\"/web-component-tut/public/build/Circles.js\");\n\n\n\n\n\n\nHow’d that go? No? What about await import()?\n\nCircles = import(\"/web-component-tut/public/build/Circles.js\");\n\n\n\n\n\n\nBetter, I think!\n\nCircles"
+  },
+  {
+    "objectID": "test-quarto-dynamic.html#demo-animated-svelte-component",
+    "href": "test-quarto-dynamic.html#demo-animated-svelte-component",
+    "title": "Svelte components in Quarto (dynamic)",
+    "section": "Demo: animated Svelte component",
+    "text": "Demo: animated Svelte component\n\n\n\n\n\n\n\nLet’s create a CirclesTwo. I’ve create a target div, #mycircles, on the margin for it to load into first:\n\nmyCircles = new Circles.default({\n  target: document.querySelector(\"#mycircles\"),\n  props: {\n    my_dataset: \"10|5,30|15,50|25,70|17,90|8\"\n  }\n});\n\n\n\n\n\n\nGreat! A little bit convoluted, but it’s working. Now we want to push some new data to it - the equivalent of setProps() in DeckGL.\nI can’t see anything that immediately stands out in myCircles, but inspecting the compiled code in Circles.js reveals that the class returned includes get my_dataset and set my_dataset.\nMaybe I can just write to the prop directly? Let’s set up some options to switch between reactively:\n\nviewof selectedDataset = Inputs.select(\n  new Map([\n    [\"A: 10|5,30|15,50|25,70|17,90|8\", \"10|5,30|15,50|25,70|17,90|8\"],\n    [\"B: 10|25,30|5,50|5\", \"10|25,30|5,50|5\"],\n    [\"C: 5|12,25|5,32|8,45|21,70|5\", \"5|12,25|5,32|8,45|21,70|5\"]\n  ]), {\n    label: \"Selected dataset\"\n  });\n\n\n\n\n\n\nAnd now we’ll update the Svelte component with it:\n\nmyCircles.my_dataset = selectedDataset;\n\n\n\n\n\n\n(These are keyed by the x value, not an independent index, so when you choose dataset C, most of the circles are treated as new elements that exit/enter, not existing ones that transition)\n\n\n\n\n\n\nNote\n\n\n\nI initially got an error:\n\n“Error: : Props cannot be set directly on the component instance unless compiling with ‘accessors: true’ or ‘’”\n\nAdding accessors to the svelte:options line at the start of Circles.svelte fixed this right up!"
+  }
+]
