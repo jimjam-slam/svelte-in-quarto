@@ -1,4 +1,5 @@
-<svelte:options tag="animated-circles" />
+<!-- <svelte:options tag="animated-circles" /> -->
+<svelte:options tag={null} />
 
 <script>
   import { randomUniform, randomInt } from "d3-random";

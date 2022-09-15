@@ -17,15 +17,19 @@ First, let's import the JavaScript. Since OJS blocks are naturally Promises, we 
 
 ```{ojs}
 Circles = require("/web-component-tut/public/build/Circles.js");
+console.log("First load:", Circles);
 ```
 
 How'd that go? No? What about `await import()`?
 
 ```{ojs}
-CirclesTwo = {
-  const { default: WidgetComponent } = await import("/web-component-tut/public/build/Circles.js");
-  return WidgetComponent;
-}
+// CirclesTwo = {
+  // const { default: WidgetComponent } =
+  // CirclesTwo = await import("/web-component-tut/public/build/Circles.js");
+  // return WidgetComponent;
+// };
+
+CirclesTwo = await import("/web-component-tut/public/build/Circles.js");
 ```
 
 Better, I think! Let's create a `CirclesTwo`. I'll create a target `<div>` for it to load into first:
@@ -34,8 +38,9 @@ Better, I think! Let's create a `CirclesTwo`. I'll create a target `<div>` for i
 :::
 
 ```{ojs}
-console.log(CirclesTwo);
-myCircles = new CirclesTwo({
+// console.log("Second attempt:");
+console.log("Second load", CirclesTwo);
+myCircles = CirclesTwo({
   target: "mycircles",
   props: {
     data: "10|5,30|15,50|25,70|17,90|8"
