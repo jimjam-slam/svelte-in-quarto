@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: docs
+  pre-process: preprocess.ts
   resources:
     - /web-component-tut/public/build/*
     
