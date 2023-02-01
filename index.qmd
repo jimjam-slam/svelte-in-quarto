@@ -4,6 +4,10 @@ author: "James Goldie"
 date: "2022-09-15"
 ---
 
+:::{.callout-tip}
+This work has been turned into a Quarto extension: [Sverto](https://github.com/360-info/sverto)!
+:::
+
 Okay, so we're using [this blog post on compiling Svelte components as Web Components](https://blog.logrocket.com/build-web-components-svelte), along with with [this SO answer on making Svelte components as browser bundles](https://stackoverflow.com/a/65522522/3246758), to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.
 
 The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.

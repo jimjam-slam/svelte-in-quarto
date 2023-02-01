@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.163">
+<meta name="generator" content="quarto-99.9.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -164,17 +164,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
   </div>
     
+  
     
   </div>
   
 
 </header>
 
+<div class="callout callout-style-default callout-tip callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This work has been turned into a Quarto extension: <a href="https://github.com/360-info/sverto">Sverto</a>!</p>
+</div>
+</div>
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
 <p>Okay, so we’re using <a href="https://blog.logrocket.com/build-web-components-svelte">this blog post on compiling Svelte components as Web Components</a>, along with with <a href="https://stackoverflow.com/a/65522522/3246758">this SO answer on making Svelte components as browser bundles</a>, to see if we can write Svelte components that can be dropped into plain HTML, or even Quarto documents.</p>
 <p>The end goal is to have something that can be instantiated in a Quarto document and then dynamically update its props (using reactive OJS code) without destroying the component - for example, to have a chart that transitions elements as the incoming data changes.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -184,7 +198,7 @@ Component tag name
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I’ve changed the <code>tag</code> attribute at the top of <code>Circles.svelte</code> from <code>"animated-circles"</code> to <code>{null}</code> in order to stop an error that crops up. it fixes that error here but prevents the component from being used in <a href="./%60test-quarto-static.qmd%60"><code>test-quarto-static.qmd</code></a> with the static HTML syntax.</p>
+<p>I’ve changed the <code>tag</code> attribute at the top of <code>Circles.svelte</code> from <code>"animated-circles"</code> to <code>{null}</code> in order to stop an error that crops up. it fixes that error here but prevents the component from being used in <a href="./`test-quarto-static.qmd`"><code>test-quarto-static.qmd</code></a> with the static HTML syntax.</p>
 </div>
 </div>
 </section>
@@ -193,7 +207,7 @@ Component tag name
 <p>In this second approach, we’ll import the module in JavaScript, create an instance, and finally update its props to pass new data in. The hope is that we can cirumvent OJS’s reactivity when creating the element, allowing it to transition its child elements (like bars or circles representing data) using its own reactivity. <a href="https://observablehq.com/@tmcw/using-mapbox-gl-js">This notebook uses the same pattern to integrate DeckGL with Observable</a>.</p>
 <p>First, let’s import the JavaScript. Since OJS blocks are naturally Promises, we should be able to use either <code>require()</code> or <code>await import()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" data-startfrom="27" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 26;"><span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>CirclesOne <span class="op">=</span> <span class="pp">require</span>(<span class="st">"/web-component-tut/public/build/Circles.js"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1" data-startfrom="31" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 30;"><span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>CirclesOne <span class="op">=</span> <span class="pp">require</span>(<span class="st">"/web-component-tut/public/build/Circles.js"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-1" data-nodetype="declaration">
 
@@ -202,7 +216,7 @@ Component tag name
 </div>
 <p>How’d that go? No? What about <code>await import()</code>?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" data-startfrom="33" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 32;"><span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>Circles <span class="op">=</span> <span class="im">import</span>(<span class="st">"/web-component-tut/public/build/Circles.js"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2" data-startfrom="37" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 36;"><span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>Circles <span class="op">=</span> <span class="im">import</span>(<span class="st">"/web-component-tut/public/build/Circles.js"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-2" data-nodetype="declaration">
 
@@ -211,9 +225,18 @@ Component tag name
 </div>
 <p>Better, I think!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" data-startfrom="39" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 38;"><span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>Circles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3" data-startfrom="43" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 42;"><span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>Circles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>And the default constructor?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" data-startfrom="49" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 48;"><span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>Circles<span class="op">.</span><span class="at">default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-4" data-nodetype="expression">
 
 </div>
 </div>
@@ -234,21 +257,21 @@ Component tag name
 </div>
 </div></div><p>Let’s create a <code>CirclesTwo</code>. I’ve create a target div, <code>#mycircles</code>, on the margin for it to load into first:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" data-startfrom="60" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 59;"><span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>myCircles <span class="op">=</span> <span class="kw">new</span> Circles<span class="op">.</span><span class="fu">default</span>({</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>  <span class="dt">target</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"#mycircles"</span>)<span class="op">,</span></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  <span class="dt">props</span><span class="op">:</span> {</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">// data: "10|5,30|15,50|25,70|17,90|8"</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> [</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5" data-startfrom="70" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 69;"><span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>myCircles <span class="op">=</span> <span class="kw">new</span> Circles<span class="op">.</span><span class="fu">default</span>({</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>  <span class="dt">target</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"#mycircles"</span>)<span class="op">,</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>  <span class="dt">props</span><span class="op">:</span> {</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>    <span class="co">// data: "10|5,30|15,50|25,70|17,90|8"</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> [</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-4" data-nodetype="declaration">
+<div id="ojs-cell-5" data-nodetype="declaration">
 
 </div>
 </div>
@@ -257,55 +280,55 @@ Component tag name
 <p>I can’t see anything that immediately stands out in <code>myCircles</code>, but inspecting the compiled code in <code>Circles.js</code> reveals that the class returned includes <code>get data</code> and <code>set data</code>.</p>
 <p>Maybe I can just write to the prop directly? Let’s set up some options to switch between reactively:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" data-startfrom="82" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 81;"><span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>viewof selectedDataset <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset A"</span><span class="op">,</span> [</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset B"</span><span class="op">,</span> [</span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
-<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset C"</span><span class="op">,</span> [</span>
-<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">12</span>}<span class="op">,</span></span>
-<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">25</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">32</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}<span class="op">,</span></span>
-<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">45</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">21</span>}<span class="op">,</span></span>
-<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
-<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>    ]]</span>
-<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span> {</span>
-<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Selected dataset"</span></span>
-<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6" data-startfrom="92" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 91;"><span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>viewof selectedDataset <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset A"</span><span class="op">,</span> [</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">15</span>}<span class="op">,</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">17</span>}<span class="op">,</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset B"</span><span class="op">,</span> [</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">25</span>}<span class="op">,</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    ]]<span class="op">,</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Dataset C"</span><span class="op">,</span> [</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">12</span>}<span class="op">,</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">25</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">32</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">8</span>}<span class="op">,</span></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">45</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">21</span>}<span class="op">,</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>      {<span class="dt">x</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>}</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    ]]</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span> {</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Selected dataset"</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-5" data-nodetype="declaration">
+<div id="ojs-cell-6" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
 <p>And now we’ll update the Svelte component with it:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" data-startfrom="112" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 111;"><span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>myCircles<span class="op">.</span><span class="at">data</span> <span class="op">=</span> selectedDataset<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7" data-startfrom="122" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 121;"><span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>myCircles<span class="op">.</span><span class="at">data</span> <span class="op">=</span> selectedDataset<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display hidden">
-<div id="ojs-cell-6" data-nodetype="expression">
-
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" data-startfrom="116" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 115;"><span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(selectedDataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
 <div id="ojs-cell-7" data-nodetype="expression">
 
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" data-startfrom="126" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 125;"><span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(selectedDataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
 <p>(These are keyed by the <code>x</code> value, not an independent index, so when you choose dataset C, most of the circles are treated as new elements that exit/enter, not existing ones that transition)</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -329,9 +352,10 @@ Note
 </main> <!-- /main -->
 
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"CirclesOne = require(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Circles = import(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Circles\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"myCircles = new Circles.default({\n  target: document.querySelector(\"#mycircles\"),\n  props: {\n    // data: \"10|5,30|15,50|25,70|17,90|8\"\n    data: [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]\n  }\n});\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"viewof selectedDataset = Inputs.select(\n  new Map([\n    [\"Dataset A\", [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]],\n    [\"Dataset B\", [\n      {x: 10, r: 25},\n      {x: 30, r: 5},\n      {x: 50, r: 5}\n    ]],\n    [\"Dataset C\", [\n      {x: 5, r: 12},\n      {x: 25, r: 5},\n      {x: 32, r: 8},\n      {x: 45, r: 21},\n      {x: 70, r: 5}\n    ]]\n  ]), {\n    label: \"Selected dataset\"\n  });\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"myCircles.data = selectedDataset;\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"Inputs.table(selectedDataset)\n"},{"methodName":"interpretQuiet","source":"shinyInput('selectedDataset')"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"CirclesOne = require(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Circles = import(\"/web-component-tut/public/build/Circles.js\");\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Circles\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"Circles.default\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"myCircles = new Circles.default({\n  target: document.querySelector(\"#mycircles\"),\n  props: {\n    // data: \"10|5,30|15,50|25,70|17,90|8\"\n    data: [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]\n  }\n});\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"viewof selectedDataset = Inputs.select(\n  new Map([\n    [\"Dataset A\", [\n      {x: 10, r: 5},\n      {x: 30, r: 15},\n      {x: 50, r: 25},\n      {x: 70, r: 17},\n      {x: 90, r: 8}\n    ]],\n    [\"Dataset B\", [\n      {x: 10, r: 25},\n      {x: 30, r: 5},\n      {x: 50, r: 5}\n    ]],\n    [\"Dataset C\", [\n      {x: 5, r: 12},\n      {x: 25, r: 5},\n      {x: 32, r: 8},\n      {x: 45, r: 21},\n      {x: 70, r: 5}\n    ]]\n  ]), {\n    label: \"Selected dataset\"\n  });\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"myCircles.data = selectedDataset;\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"Inputs.table(selectedDataset)\n"},{"methodName":"interpretQuiet","source":"shinyInput('selectedDataset')"}]}
 </script>
 <script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
 window._ojs.paths.runtimeToDoc = "../..";
 window._ojs.paths.runtimeToRoot = "../..";
 window._ojs.paths.docToRoot = "";
@@ -379,7 +403,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -415,24 +456,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
